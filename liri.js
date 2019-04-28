@@ -12,13 +12,15 @@ var spotify = new Spotify(keys.spotify);
 
 var axios = require("axios");
 
-// Beginning of OMDB call
+// getMeMovie function
 
-var movieName = process.argv[2];
+var getMeMovie = function (movieName) {
+
+    if (!movieName) {
+        movieName = "Mr. Nobody"
+    };
 
 var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-
-console.log("Query URL: " + queryUrl);
 
 axios.get(queryUrl).then(
     function(response) {
@@ -30,7 +32,7 @@ axios.get(queryUrl).then(
         console.log(response.data.imdbRating);
         console.log("-----Rotten Tomatoes rating:-----");
         console.log(response.data.Ratings[1].Value);
-        console.log("-----County where produced:-----");
+        console.log("-----Country where produced:-----");
         console.log(response.data.Country);
         console.log("-----Language of movie:-----");
         console.log(response.data.Language);
@@ -41,6 +43,8 @@ axios.get(queryUrl).then(
         
     }
   );
+
+}
 
   // end of OMDB call
 
@@ -80,7 +84,7 @@ var pick = function(caseData, functionData) {
         break;
 
         case 'movie-this':
-        getMeMovie(functionresponse);
+        getMeMovie(functionData);
         break;
     }
 }
