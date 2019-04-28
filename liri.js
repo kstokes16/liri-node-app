@@ -12,11 +12,34 @@ var spotify = new Spotify(keys.spotify);
 
 var axios = require("axios");
 
-// getMeMovie function
+var omdb = require('omdb');
 
-var getMeMovie = function (movieName) {
+/*  var getMeMovie = function(movieName) {
+ 
+omdb.get({ title: movieName }, true, function(err, movie) {
+    if(err) {
+        return console.error(err);
+    }
 
     if (!movieName) {
+        movieName = "mr nobody"
+    };
+ 
+    console.log("MOVIE TITLE------");
+    console.log(movieName.title);
+
+});
+
+}
+
+*/
+
+
+// getMeMovie function
+
+var getMeMovie = function (movieName) { 
+
+     if (!movieName) {
         movieName = "Mr. Nobody"
     };
 
@@ -46,7 +69,7 @@ axios.get(queryUrl).then(
 
 }
 
-  // end of OMDB call
+// end of getMeMovie function
 
 //getMeSpotify function
 
@@ -57,6 +80,7 @@ var getMeSpotify = function(songName) {
     };
  
     spotify.search({ type: 'track', query: songName, limit: 1 }, function(err, data) {
+
       if (err) {
         return console.log('Error occurred: ' + err);
       }
@@ -73,18 +97,49 @@ var getMeSpotify = function(songName) {
     
     }
 
-    // end of getMeSpotify function
+// end of getMeSpotify function
+
+// getMeBands function
+
+var getMeBands = function (bandName) { 
+
+    if (!bandName) {
+        return console.log("please enter a band name to get information on their shows");
+    }
+
+var queryUrl = "https://rest.bandsintown.com/artists/" + bandName + "/events?app_id=codingbootcamp&date=upcoming";
+
+axios.get(queryUrl).then(
+   function(response) {
+       console.log("-----Name of the venue:-----");
+       console.log(response.data[0].venue.name);
+       console.log("-----Venue location:-----");
+       console.log(response.data[0].venue.city, response.data[0].venue.region);
+       console.log("-----Date of the event:-----");
+       console.log(response.data[0].datetime);
+   }
+ );
+
+}
+
+// end of getMeBands function
 
 // switch statement to use one of the 3 APIs
 
-var pick = function(caseData, functionData) {
+var pick = function(caseData, functionData){
+
     switch(caseData) {
+
         case 'spotify-this-song':
         getMeSpotify(functionData);
         break;
 
         case 'movie-this':
         getMeMovie(functionData);
+        break;
+
+        case 'concert-this':
+        getMeBands(functionData);
         break;
     }
 }
@@ -100,4 +155,3 @@ var runThis = function(argOne, argTwo) {
 // calling runThis function
 
 runThis(process.argv[2], process.argv[3]);
-
