@@ -11,6 +11,10 @@ var spotify = new Spotify(keys.spotify);
 //getMeSpotify function
 
 var getMeSpotify = function(songName) {
+
+    if (!songName) {
+        songName = "the sign ace of base"
+    };
  
     spotify.search({ type: 'track', query: songName, limit: 1 }, function(err, data) {
       if (err) {
