@@ -8,6 +8,42 @@ var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
 
+// Require Axios to run OMDB and BandsInTown
+
+var axios = require("axios");
+
+// Beginning of OMDB call
+
+var movieName = process.argv[2];
+
+var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+
+console.log("Query URL: " + queryUrl);
+
+axios.get(queryUrl).then(
+    function(response) {
+        console.log("-----Title of the Movie:-----");
+        console.log(response.data.Title);
+        console.log("-----Year the movie was released:-----");
+        console.log(response.data.Year);
+        console.log("-----IMDB rating:-----");
+        console.log(response.data.imdbRating);
+        console.log("-----Rotten Tomatoes rating:-----");
+        console.log(response.data.Ratings[1].Value);
+        console.log("-----County where produced:-----");
+        console.log(response.data.Country);
+        console.log("-----Language of movie:-----");
+        console.log(response.data.Language);
+        console.log("-----Plot of movie:-----");
+        console.log(response.data.Plot);
+        console.log("-----Actors in movie:-----");
+        console.log(response.data.Actors);
+        
+    }
+  );
+
+  // end of OMDB call
+
 //getMeSpotify function
 
 var getMeSpotify = function(songName) {
@@ -42,8 +78,10 @@ var pick = function(caseData, functionData) {
         case 'spotify-this-song':
         getMeSpotify(functionData);
         break;
-        default:
-        console.log("please enter a song");
+
+        case 'movie-this':
+        getMeMovie(functionresponse);
+        break;
     }
 }
 
@@ -55,11 +93,7 @@ var runThis = function(argOne, argTwo) {
   pick(argOne, argTwo);
 };
 
-// end of defining function for what user inputs
-
 // calling runThis function
 
 runThis(process.argv[2], process.argv[3]);
-
-// end of runThis function
 
