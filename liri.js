@@ -3,16 +3,10 @@ require("dotenv").config();
 
 // Require keys
 var keys = require("./keys.js");
-
-// Require Spotify
 var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
-
-// Require Axios to run OMDB and BandsInTown
-
 var axios = require("axios");
-
-var omdb = require('omdb');
+var moment = require('moment');
 
 /*  var getMeMovie = function(movieName) {
  
@@ -33,7 +27,6 @@ omdb.get({ title: movieName }, true, function(err, movie) {
 }
 
 */
-
 
 // getMeMovie function
 
@@ -64,8 +57,7 @@ axios.get(queryUrl).then(
         console.log("-----Actors in movie:-----");
         console.log(response.data.Actors);
         
-    }
-  );
+    });
 
 }
 
@@ -93,6 +85,7 @@ var getMeSpotify = function(songName) {
     console.log(data.tracks.items[0].preview_url);
     console.log("-----Album the song is from:-----");
     console.log(data.tracks.items[0].album.name);
+
     })
     
     }
@@ -111,24 +104,33 @@ var queryUrl = "https://rest.bandsintown.com/artists/" + bandName + "/events?app
 
 axios.get(queryUrl).then(
    function(response) {
-       console.log("-----Name of the venue:-----");
-       console.log(response.data[0].venue.name);
-       console.log("-----Venue location:-----");
-       console.log(response.data[0].venue.city, response.data[0].venue.region);
-       console.log("-----Date of the event:-----");
-       console.log(response.data[0].datetime);
-   }
- );
 
+    var concertInfo = response.data;
+
+    for (i=0; i < 5; i++) {
+
+      console.log(i);
+       console.log("-----Upcoming events for " + bandName);
+       console.log("-----Name of the venue:-----");
+       console.log(concertInfo[i].venue.name);
+       console.log("-----Venue location:-----");
+       console.log(concertInfo[i].venue.city, response.data[i].venue.region);
+       console.log("-----Date of the event:-----");
+       var date = moment(concertInfo[i].datetime).format("MM DD YYYY");
+       console.log(date);
+       console.log("--------------------");
+       console.log("--------------------");
+   }});
+ 
 }
 
 // end of getMeBands function
 
 // switch statement to use one of the 3 APIs
 
-var pick = function(caseData, functionData){
+var pick = function (caseData, functionData) {
 
-    switch(caseData) {
+    switch (caseData) {
 
         case 'spotify-this-song':
         getMeSpotify(functionData);
@@ -141,17 +143,24 @@ var pick = function(caseData, functionData){
         case 'concert-this':
         getMeBands(functionData);
         break;
+
+        case 'do-this':
+        doThis(userSearch);
+        break;
     }
+
 }
 
 // end of switch statement
 
 // defining function for what user inputs
 
-var runThis = function(argOne, argTwo) {
-  pick(argOne, argTwo);
+let userInput = process.argv.slice(3).join("+");
+
+var runThis = function(argumentOne, argumentTwo) {
+  pick(argumentOne, argumentTwo);
 };
 
 // calling runThis function
 
-runThis(process.argv[2], process.argv[3]);
+runThis (process.argv[2], userInput);
