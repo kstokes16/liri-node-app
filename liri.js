@@ -7,6 +7,7 @@ var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
 var axios = require("axios");
 var moment = require('moment');
+var fs = require("fs");
 
 /*  var getMeMovie = function(movieName) {
  
@@ -120,7 +121,18 @@ axios.get(queryUrl).then(
        console.log(date);
        console.log("--------------------");
        console.log("--------------------");
-   }});
+
+       var data = {
+         "Upcoming event": bandName,
+         "Name of Venue:": concertInfo[i].venue.name
+       }
+
+       
+   }
+   fs.appendFile("log.txt",JSON.stringify(data)+"\n", function(error){
+    console.log("Log.txt file has been updated..")
+  })
+  });
  
 }
 
@@ -145,7 +157,7 @@ var pick = function (caseData, functionData) {
         break;
 
         case 'do-this':
-        doThis(userSearch);
+        doThis();
         break;
     }
 
@@ -164,3 +176,25 @@ var runThis = function(argumentOne, argumentTwo) {
 // calling runThis function
 
 runThis (process.argv[2], userInput);
+
+function doThis(){
+  fs.readFile("random.txt", "utf8", function(error, data){
+    var arr = data.split(",");
+    console.log(arr);
+
+    switch (arr[0]) {
+
+      case 'spotify-this-song':
+      getMeSpotify(arr[1]);
+      break;
+
+      case 'movie-this':
+      getMeMovie(arr[1]);
+      break;
+
+      case 'concert-this':
+      getMeBands(arr[1]);
+      break;
+  }
+  })
+}
